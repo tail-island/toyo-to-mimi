@@ -1,6 +1,7 @@
+import bz2
 import numpy   as np
 import os.path as path
-import wave
+import pickle
 
 from funcy     import cat, mapcat, partition, repeat, repeatedly
 from itertools import starmap
@@ -9,8 +10,8 @@ from utility   import child_paths
 
 def load_data(data_path='./data'):
     def load_character(data_path):
-        with wave.open(path.join(data_path, 'x.wav'), 'rb') as f:
-            return np.frombuffer(f.readframes(f.getnframes()), dtype='int16').astype(np.float32).reshape(f.getnframes(), 1) / 32768
+        with bz2.open(path.join(data_path, 'x.pickle.bz2'), 'rb') as f:
+            return pickle.load(f)
 
     def load_actor(data_path):
         return tuple(map(load_character, filter(path.isdir, child_paths(data_path))))
